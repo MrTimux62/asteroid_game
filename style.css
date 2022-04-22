@@ -1,0 +1,56 @@
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    cursor: none;
+}
+
+.background-div {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.background-div img{
+    max-width: 100vw;
+}
+
+#background-div-1 {
+    top: -50%;
+    animation: bgscroll1 20s infinite linear;
+}
+
+#background-div-2 {
+    top: 50%;
+    animation: bgscroll2 20s infinite linear;
+}
+
+#game_window {
+    position: relative;
+}
+
+#player {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+#player img {
+    max-width: 100px;
+}
+
+.asteroid {
+    position: absolute;
+    transform: translate(-50%, -50%);
+
+}
+
+@keyframes bgscroll1 {
+    from {top: -50vh;}
+    to {top: 50vh;}
+}
+
+@keyframes bgscroll2 {
+    from {top: 50vh;}
+    to {top: 150vh;}
+}
