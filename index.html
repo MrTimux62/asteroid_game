@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Asteroid Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="background-div-1" class="background-div">
         <img src="img/background.jpg" alt="">
@@ -14,12 +16,19 @@
     <div id="background-div-2" class="background-div">
         <img src="img/background.jpg" alt="">
     </div>
+    <div id="ATH">
+        <div id="timer"></div>
+        <div id="life-bar"><div id="life" name="100"></div></div>
+        <div id="wave-countdown"></div>
+    </div>
     <div id="game_window">
         <div id="player" style="left: 50vw; top: 50vh;">
             <img src="img/player.png" alt="">
         </div>
+        <!--<img class='asteroid wave_1' id='1_984198' src='img/asteroid1.png' style='max-width: 75px; transform: rotate(360deg) translate(-50%, -50%); left: 200px; top: 200px;'>-->
     </div>
     <script src="Jquery-3.6.0.js"></script>
     <script src="main.js"></script>
 </body>
+
 </html>
