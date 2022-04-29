@@ -20,7 +20,7 @@ $(document).ready(function () {
     }
 
     let nb_wave = 1;
-    let countdown = -25;
+    let countdown = -10;
     setInterval(() => { // ASTEROID DEPLACEMENTS
         for (let index = 0; index < (getRandomInt(10) + 4); index++) {
             let a_num = getRandomInt(10000);
@@ -91,12 +91,12 @@ $(document).ready(function () {
             $(".wave_" + nb_wave).remove();
             nb_wave++;
         }, 9500);
-    }, 25000);
+    }, 10000);
 
     setInterval(() => {
         if (countdown < 0) {
             countdown ++;
-            if (countdown > -6) {
+            if (countdown > -4) {
                 $("#wave-countdown").html("Première vague dans <b style='color:red;font-size: 130%;'>"+ Math.abs(countdown) +"</b> secondes")
             } else {
                 $("#wave-countdown").html("Première vague dans <b>"+ Math.abs(countdown) +"</b> secondes")
@@ -105,11 +105,11 @@ $(document).ready(function () {
             countdown--
         }
         if (countdown == 0) {
-            countdown = 25
+            countdown = 10
         }
-        if (countdown > 15) {
+        if (countdown > 5) {
             $("#wave-countdown").html("Vague en approche !")
-        } else if (countdown > 5) {
+        } else if (countdown > 3) {
             $("#wave-countdown").html("Prochaine vague dans <b>"+countdown+"</b> secondes")
         }
         else if (countdown > 0) {
