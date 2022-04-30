@@ -2,7 +2,9 @@ let life = 100;
 let secondesplayed = 0;
 let minutesplayed = 0;
 let hoursplayed = 0;
-let shock_on = false
+let shock_on = false;
+let asteroid_destroy = 0;
+let shockwave_available = 3;
 
 $(document).mousemove(function (e) {
     // values: e.clientX, e.clientY, e.pageX, e.pageY
@@ -20,13 +22,47 @@ $(document).ready(function () {
         $("#life").css("width", life + "%");
     }
 
+    function displayAsteroid() {
+        $("#stats-asteroid").html("Astéroïdes détruits : " + asteroid_destroy);
+    }
+
+    function displayShockwave() {
+        console.log("resfresh");
+        if (shockwave_available >= 3) {
+            $("#shock-1").css("width", "100%");
+            $("#shock-1").css("opacity", "1");
+            $("#shock-2").css("width", "100%");
+            $("#shock-2").css("opacity", "1");
+            $("#shock-3").css("width", "100%");
+            $("#shock-3").css("opacity", "1");
+        } else if (shockwave_available >= 2) {
+            $("#shock-1").css("width", "100%");
+            $("#shock-1").css("opacity", "1");
+            $("#shock-2").css("width", "100%");
+            $("#shock-2").css("opacity", "1");
+            $("#shock-3").css("width", ((shockwave_available - 2)*100) + "%");
+            $("#shock-3").css("opacity", "0.5");
+        } else if (shockwave_available >= 1) {
+            $("#shock-1").css("width", "100%");
+            $("#shock-1").css("opacity", "1");
+            $("#shock-2").css("width", ((shockwave_available - 1)*100) + "%");
+            $("#shock-2").css("opacity", "0.5");
+            $("#shock-3").css("width", "0%");
+        } else {
+            $("#shock-1").css("width", (shockwave_available*100) + "%");
+            $("#shock-1").css("opacity", "0.5");
+            $("#shock-2").css("width", "0%");
+            $("#shock-3").css("width", "0%");
+        }
+    }
+
     let nb_wave = 1;
-    let countdown = -10;
-    
+    let countdown = -7;
+
     setInterval(() => { // ASTEROID DEPLACEMENTS
-        for (let index = 0; index < (getRandomInt(12) + 6); index++) {
+        for (let index = 0; index < (getRandomInt(13) + 7); index++) {
             let a_num = getRandomInt(10000);
-            $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid"+ getRandomInt(5) +".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
+            $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
             switch (getRandomInt(4)) {
                 case 0: // top
                     $("#" + nb_wave + "_" + a_num).css("top", "-25vh");
@@ -36,7 +72,7 @@ $(document).ready(function () {
                         top: "125vh",
                         deg: getRandomInt(721),
                     }, {
-                        duration: (getRandomInt(3000) + 6000),
+                        duration: (getRandomInt(3000) + 5000),
                         step: function (now) {
                             $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
                         }
@@ -50,7 +86,7 @@ $(document).ready(function () {
                         top: (getRandomInt(100) + 1) + "vh",
                         ddeg: getRandomInt(721),
                     }, {
-                        duration: (getRandomInt(3000) + 6000),
+                        duration: (getRandomInt(3000) + 5000),
                         step: function (now) {
                             $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
                         }
@@ -64,7 +100,7 @@ $(document).ready(function () {
                         top: (getRandomInt(100) + 1) + "vh",
                         deg: getRandomInt(721),
                     }, {
-                        duration: (getRandomInt(3000) + 6000),
+                        duration: (getRandomInt(3000) + 5000),
                         step: function (now) {
                             $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
                         }
@@ -78,7 +114,7 @@ $(document).ready(function () {
                         top: "-25vh",
                         deg: getRandomInt(721),
                     }, {
-                        duration: (getRandomInt(3000) + 6000),
+                        duration: (getRandomInt(3000) + 5000),
                         step: function (now) {
                             $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
                         }
@@ -92,20 +128,23 @@ $(document).ready(function () {
         setTimeout(() => {
             $(".wave_" + nb_wave).remove();
             nb_wave++;
-        }, 9500);
-    }, 10000);
+        }, 7000);
+    }, 7200);
 
     setInterval(() => {
         if (countdown < 0) {
-            countdown ++;
+            countdown++;
             if (countdown > -4) {
-                $("#wave-countdown").html("Première vague dans <b style='color:red;font-size: 130%;'>"+ Math.abs(countdown) +"</b> secondes")
+                $("#wave-countdown").html("Champ d'asteroides dans <b style='color:red;font-size: 130%;'>" + Math.abs(countdown) + "</b> secondes")
             } else {
-                $("#wave-countdown").html("Première vague dans <b>"+ Math.abs(countdown) +"</b> secondes")
+                $("#wave-countdown").html("Champ d'asteroides dans <b>" + Math.abs(countdown) + "</b> secondes")
             }
-        } else {
-            countdown--
         }
+        else {
+            $("#wave-countdown").html("Vous êtes dans le champ d'asteroides !")
+            //countdown--
+        }
+        /*
         if (countdown == 0) {
             countdown = 10
         }
@@ -116,7 +155,7 @@ $(document).ready(function () {
         }
         else if (countdown > 0) {
             $("#wave-countdown").html("Prochaine vague dans <b style='color:red;font-size: 130%;'>"+countdown+"</b> secondes")
-        }
+        }*/
     }, 1000);
 
     setInterval(() => {
@@ -129,72 +168,134 @@ $(document).ready(function () {
                 minutesplayed = 0;
             }
         }
-        $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")   
+        $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
     }, 1000);
 
     setInterval(() => { // COLLISION SYSTEM
-        $(".wave_" + nb_wave).each(function( index ) {
-            let asteroid_Xmin = parseFloat($(this).css("left")) - (parseFloat($(this).css("max-width")) / 2) 
-            let asteroid_Xmax = parseFloat($(this).css("left")) + (parseFloat($(this).css("max-width")) / 2)
-            let asteroid_Ymax = parseFloat($(this).css("top")) + (parseFloat($(this).css("max-width")) / 2)
-            let asteroid_Ymin = parseFloat($(this).css("top")) - (parseFloat($(this).css("max-width")) / 2)
-            let player_Xmin = parseFloat($("#player").css("left")) - 25
-            let player_Xmax = parseFloat($("#player").css("left")) + 25
-            let player_Ymax = parseFloat($("#player").css("top")) + 25
-            let player_Ymin = parseFloat($("#player").css("top")) - 25
+        $(".wave_" + nb_wave).each(function (index) {
+            let asteroid_Xmin;
+            let asteroid_Xmax;
+            let asteroid_Ymax;
+            let asteroid_Ymin;
+            let player_Xmin;
+            let player_Xmax;
+            let player_Ymax;
+            let player_Ymin;
+            if (shock_on == true) {
+                asteroid_Xmin = parseFloat($(this).css("left")) - ((parseFloat($(this).css("max-width")) / 2) + (parseInt($(".shockwave").css("width")) / 3))
+                asteroid_Xmax = parseFloat($(this).css("left")) + ((parseFloat($(this).css("max-width")) / 2) + (parseInt($(".shockwave").css("width")) / 3))
+                asteroid_Ymax = parseFloat($(this).css("top")) + ((parseFloat($(this).css("max-width")) / 2) + (parseInt($(".shockwave").css("width")) / 3))
+                asteroid_Ymin = parseFloat($(this).css("top")) - ((parseFloat($(this).css("max-width")) / 2) + (parseInt($(".shockwave").css("width")) / 3))
+                player_Xmin = parseFloat($(".shockwave").css("left")) - (parseInt($(".shockwave").css("width")) / 3)
+                player_Xmax = parseFloat($(".shockwave").css("left")) + (parseInt($(".shockwave").css("width")) / 3)
+                player_Ymax = parseFloat($(".shockwave").css("top")) + (parseInt($(".shockwave").css("width")) / 3)
+                player_Ymin = parseFloat($(".shockwave").css("top")) - (parseInt($(".shockwave").css("width")) / 3)
+                $("#player").css("opacity", 0.6)
+            } else {
+                asteroid_Xmin = parseFloat($(this).css("left")) - (parseFloat($(this).css("max-width")) / 2)
+                asteroid_Xmax = parseFloat($(this).css("left")) + (parseFloat($(this).css("max-width")) / 2)
+                asteroid_Ymax = parseFloat($(this).css("top")) + (parseFloat($(this).css("max-width")) / 2)
+                asteroid_Ymin = parseFloat($(this).css("top")) - (parseFloat($(this).css("max-width")) / 2)
+                player_Xmin = parseFloat($("#player").css("left")) - 25
+                player_Xmax = parseFloat($("#player").css("left")) + 25
+                player_Ymax = parseFloat($("#player").css("top")) + 25
+                player_Ymin = parseFloat($("#player").css("top")) - 25
+                $("#player").css("opacity", 1)
+            }
+
 
             if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
                 // MATCH BOTTOM JOUEUR
                 if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
                     console.log("COLLISION DROITE BOTTOM");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
                     console.log("COLLISION GAUCHE BOTTOM");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
             } else if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
                 // MATCH TOP JOUEUR
                 if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
                     console.log("COLLISION DROITE TOP");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
                     console.log("COLLISION GAUCHE TOP");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
             } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
                 // MATCH GAUCHE JOUEUR
                 if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
                     console.log("COLLISION GAUCHE BOTTOM");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
                 if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
                     console.log("COLLISION GAUCHE TOP");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
             } else if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
                 // MATCH DROITE JOUEUR
                 if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
                     console.log("COLLISION DROITE BOTTOM");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
                 if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
                     console.log("COLLISION DROITE TOP");
-                    life = life - parseInt((parseInt($(this).css("max-width")) -30) / (getRandomInt(4) + 3))
-                    displayLife();
+                    if (shock_on == false) {
+                        life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
+                        displayLife();
+                    } else {
+                        asteroid_destroy++;
+                        displayAsteroid();
+                    }
                     $(this).remove()
                 }
             }
@@ -203,25 +304,35 @@ $(document).ready(function () {
             console.log("PLAYER : " + player_Xmax + "D " + player_Xmin + "G " + player_Ymax + "B " + player_Ymin + "T");
             console.log("ASTEROID : " + asteroid_Xmax + "D " + asteroid_Xmin + "G " + asteroid_Ymax + "B " + asteroid_Ymin + "T");
             */
-          });
+        });
     }, 50);
 
-    $(document).keydown(function (e) { 
-        if (e.keyCode == 32 && shock_on == false) {
+    setInterval(() => {
+        if (shockwave_available < 3) {
+            shockwave_available = shockwave_available + 0.002
+            displayShockwave();
+        }
+    }, 20);
+
+    $(document).keydown(function (e) {
+        if (e.keyCode == 32 && shock_on == false && shockwave_available > 1) {
             shock_on = true
+            shockwave_available = shockwave_available - 1;
+            console.log(shockwave_available);
+            displayShockwave();
             let shockwave_id = getRandomInt(100000)
-            $("#game_window").append("<div class='shockwave' id='"+ shockwave_id +"' style='left: "+ $("#player").css("left") +"; top: "+ $("#player").css("top") +"; width:5px; height:5px;'></div>")
+            $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
             $("#" + shockwave_id).animate({
-                width: "350px",
-                height: "350px",
+                width: "400px",
+                height: "400px",
                 opacity: 0,
-            }, 750);
-            setTimeout(() => {
-                $("#" + shockwave_id).remove()
             }, 800);
             setTimeout(() => {
+                $("#" + shockwave_id).remove()
+            }, 900);
+            setTimeout(() => {
                 shock_on = false
-            }, 1500);
+            }, 1000);
         }
     });
 

@@ -68,6 +68,32 @@ html, body {
     width: 100%;
 }
 
+#shockwave-div {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50vw;
+    top: 7vh;
+    background-color: transparent;
+    width: 35vw;
+    height: 2vh;
+    display: inline-flex;
+    place-content: space-between;
+}
+
+.shockwave-bar {
+    width: 30%;
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.shock {
+    background: rgb(45, 130, 227);
+    background: linear-gradient(90deg, rgba(45, 130, 227, 0.8) 0%, rgba(29, 93, 167, 0.8) 100%);
+    height: 100%;
+}
+
 #wave-countdown {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -90,6 +116,17 @@ html, body {
     text-align: center;
 }
 
+#stats-asteroid {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 10vw;
+    top: 6vh;
+    width: 25vw;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 120%;
+    text-align: center;
+}
+
 #WIP {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -102,11 +139,26 @@ html, body {
 }
 
 .shockwave {
-    background: rgb(255,255,255);
-background: radial-gradient(circle, rgba(255,255,255,0) 50%, rgba(255,255,255,1) 100%);
+    background: rgb(255, 255, 255);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 100%);
     border-radius: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
+}
+
+#tutorial {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 90vw;
+    bottom: 1vh;
+    width: 25vw;
+    color: rgb(255, 255, 255);
+    font-size: 120%;
+    text-align: center;
+}
+
+#ATH {
+    z-index: 1;
 }
 
 @keyframes bgscroll1 {
