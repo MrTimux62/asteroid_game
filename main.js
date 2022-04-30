@@ -314,6 +314,28 @@ $(document).ready(function () {
         }
     }, 20);
 
+    $(document).mousedown(function () { 
+        if (shock_on == false && shockwave_available > 1) {
+            shock_on = true
+            shockwave_available = shockwave_available - 1;
+            console.log(shockwave_available);
+            displayShockwave();
+            let shockwave_id = getRandomInt(100000)
+            $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
+            $("#" + shockwave_id).animate({
+                width: "400px",
+                height: "400px",
+                opacity: 0,
+            }, 800);
+            setTimeout(() => {
+                $("#" + shockwave_id).remove()
+            }, 900);
+            setTimeout(() => {
+                shock_on = false
+            }, 1000);
+        }
+    });
+
     $(document).keydown(function (e) {
         if (e.keyCode == 32 && shock_on == false && shockwave_available > 1) {
             shock_on = true
