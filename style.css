@@ -161,6 +161,64 @@ html, body {
     z-index: 1;
 }
 
+#game-over {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: 100;
+    /*display: none;*/
+    text-align: center;
+    background-color: black;
+    color: rgb(189, 27, 27);
+}
+
+#game-over b {
+    font-size: 350%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    font-family: 'Pathway Gothic One', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Syne Tactile', cursive;
+}
+
+#timer-over {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 60%;
+}
+
+#stats-asteroid-over {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 65%;
+}
+
+#restart-over {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 75%;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 5px;
+    font-size: 125%;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 500ms;
+}
+
+#restart-over:hover {
+    border-radius: 2px;
+    color: black;
+    background-color: white;
+    transition: all 500ms;
+}
+
 @keyframes bgscroll1 {
     from {
         top: -75vh;

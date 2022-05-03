@@ -6,6 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asteroid Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&family=Roboto:wght@300&family=Syne+Tactile&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -16,14 +21,28 @@
     <div id="background-div-2" class="background-div">
         <img src="img/background.jpg" alt="">
     </div>
+    <div id="game-over" style="display: none;">
+        <b>GAME OVER</b>
+        <div id="timer-over"></div>
+        <div id="stats-asteroid-over">Astéroïdes détruits : 0</div>
+        <button id="restart-over">Recommencer</button>
+    </div>
     <div id="ATH">
         <div id="timer"></div>
         <div id="stats-asteroid">Astéroïdes détruits : 0</div>
-        <div id="life-bar"><div id="life" name="100"></div></div>
+        <div id="life-bar">
+            <div id="life" name="100"></div>
+        </div>
         <div id="shockwave-div">
-            <div id="shockwave-1" class="shockwave-bar"><div id="shock-1" class="shock"></div></div>
-            <div id="shockwave-2" class="shockwave-bar"><div id="shock-2" class="shock"></div></div>
-            <div id="shockwave-3" class="shockwave-bar"><div id="shock-3" class="shock"></div></div>
+            <div id="shockwave-1" class="shockwave-bar">
+                <div id="shock-1" class="shock"></div>
+            </div>
+            <div id="shockwave-2" class="shockwave-bar">
+                <div id="shock-2" class="shock"></div>
+            </div>
+            <div id="shockwave-3" class="shockwave-bar">
+                <div id="shock-3" class="shock"></div>
+            </div>
         </div>
         <div id="wave-countdown"></div>
         <!--<div id="tutorial">Espace | Onde de choc</div>-->

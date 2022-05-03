@@ -18,12 +18,24 @@ function getRandomInt(max) {
 
 $(document).ready(function () {
 
+    $("#restart-over").click(function (e) { 
+        e.preventDefault();
+        location.reload();
+    });
+
     function displayLife() {
+        if (life <= 0) {
+            console.log("GAME OVER");
+            $("html, body").css("cursor", "default");
+            $("#game-over").css("display", "");
+            $("game_window").remove();
+        }
         $("#life").css("width", life + "%");
     }
 
     function displayAsteroid() {
         $("#stats-asteroid").html("Astéroïdes détruits : " + asteroid_destroy);
+        $("#stats-asteroid-over").html("Astéroïdes détruits : " + asteroid_destroy);
     }
 
     function displayShockwave() {
@@ -40,16 +52,16 @@ $(document).ready(function () {
             $("#shock-1").css("opacity", "1");
             $("#shock-2").css("width", "100%");
             $("#shock-2").css("opacity", "1");
-            $("#shock-3").css("width", ((shockwave_available - 2)*100) + "%");
+            $("#shock-3").css("width", ((shockwave_available - 2) * 100) + "%");
             $("#shock-3").css("opacity", "0.5");
         } else if (shockwave_available >= 1) {
             $("#shock-1").css("width", "100%");
             $("#shock-1").css("opacity", "1");
-            $("#shock-2").css("width", ((shockwave_available - 1)*100) + "%");
+            $("#shock-2").css("width", ((shockwave_available - 1) * 100) + "%");
             $("#shock-2").css("opacity", "0.5");
             $("#shock-3").css("width", "0%");
         } else {
-            $("#shock-1").css("width", (shockwave_available*100) + "%");
+            $("#shock-1").css("width", (shockwave_available * 100) + "%");
             $("#shock-1").css("opacity", "0.5");
             $("#shock-2").css("width", "0%");
             $("#shock-3").css("width", "0%");
@@ -58,7 +70,6 @@ $(document).ready(function () {
 
     let nb_wave = 1;
     let countdown = -7;
-
     setInterval(() => { // ASTEROID DEPLACEMENTS
         for (let index = 0; index < (getRandomInt(20) + 18); index++) {
             let a_num = getRandomInt(10000);
@@ -159,16 +170,19 @@ $(document).ready(function () {
     }, 1000);
 
     setInterval(() => {
-        secondesplayed++;
-        if (secondesplayed > 59) {
-            minutesplayed++;
-            secondesplayed = 0;
-            if (minutesplayed > 59) {
-                hoursplayed++;
-                minutesplayed = 0;
+        if (life > 0) {
+            secondesplayed++;
+            if (secondesplayed > 59) {
+                minutesplayed++;
+                secondesplayed = 0;
+                if (minutesplayed > 59) {
+                    hoursplayed++;
+                    minutesplayed = 0;
+                }
             }
+            $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
+            $("#timer-over").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
         }
-        $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
     }, 1000);
 
     setInterval(() => { // COLLISION SYSTEM
@@ -314,7 +328,7 @@ $(document).ready(function () {
         }
     }, 20);
 
-    $(document).mousedown(function () { 
+    $(document).mousedown(function () {
         if (shock_on == false && shockwave_available > 1) {
             shock_on = true
             shockwave_available = shockwave_available - 1;
