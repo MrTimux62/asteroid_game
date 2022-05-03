@@ -60,7 +60,7 @@ $(document).ready(function () {
     let countdown = -7;
 
     setInterval(() => { // ASTEROID DEPLACEMENTS
-        for (let index = 0; index < (getRandomInt(13) + 7); index++) {
+        for (let index = 0; index < (getRandomInt(20) + 18); index++) {
             let a_num = getRandomInt(10000);
             $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
             switch (getRandomInt(4)) {
