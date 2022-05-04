@@ -506,7 +506,7 @@ $(document).ready(function () {
 
     setInterval(() => {
         if (shockwave_available < 3) {
-            shockwave_available = shockwave_available + 0.002
+            shockwave_available = shockwave_available + 0.0015
             displayShockwave();
         }
     }, 20);
