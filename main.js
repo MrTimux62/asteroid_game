@@ -17,6 +17,7 @@ let play = false;
 let nb_wave = 1;
 let countdown = -7;
 let engine = new Audio('sound/engine.mp3');
+engine.paused
 let shockwave = new Audio('sound/shockwave.mp3');
 shockwave.volume = 0.3;
 let impact = new Audio('sound/impact.mp3');
@@ -128,6 +129,54 @@ $("#play").click(function (e) {
             }
         }
     }, 1000);
+    setInterval(() => {
+        if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) > 2) {
+            player_X = 1;
+        } else if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) < -2) {
+            player_X = -1;
+        } else {
+            player_X = 0;
+        }
+        if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) > 2) {
+            player_Y = 1;
+        } else if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) < -2) {
+            player_Y = -1;
+        } else {
+            player_Y = 0;
+        }
+    }, 10);
+
+    setInterval(() => {
+        if (player_X != 0 || player_Y != 0) {
+            power_engine = true
+            if (boost_on != true) {
+                $("#player img").prop("src", "img/player_boost.png")
+                if (engine.paused && Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100) {
+                    engine = new Audio('sound/engine.mp3');
+                    engine.volume = 0.2;
+                    engine.loop = true;
+                    engine.play();
+                }
+            } else {
+                if (engine.paused && Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100) {
+                    engine = new Audio('sound/engine_boost.mp3');
+                    engine.volume = 0.2;
+                    engine.loop = true;
+                    engine.play();
+                }
+                $("#player img").prop("src", "img/player_boost_max.png")
+            }
+            $("#player").stop().animate({ left: $("#target-player").css("left"), top: $("#target-player").css("top") }, player_speed);
+            if (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) < 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) < 100) {
+                if (!engine.paused) {
+                    engine.pause();
+                    engine.currentTime = 0;
+                }
+                power_engine = false;
+                $("#player img").prop("src", "img/player.png")
+            }
+        }
+    }, 50);
 });
 
 $(document).ready(function () {
@@ -170,11 +219,6 @@ $(document).ready(function () {
     $(document).click(function (e) {
         e.preventDefault();
         if (boost_charge == true && play == true) {
-            engine = new Audio('sound/engine_boost.mp3');
-            engine_sound_on = true;
-            engine.volume = 0.2;
-            engine.loop = true;
-            engine.play();
             boost_charge = false
             boost_on = true
             $("#player img").prop("src", "img/player_boost_max.png")
@@ -184,7 +228,6 @@ $(document).ready(function () {
                 player_speed = 300;
                 $("#player img").prop("src", "img/player_boost.png")
                 boost_on = false
-                engine.pause();
                 engine.currentTime = 0;
                 $("#boost").stop().animate({ width: "100%" }, 4500);
             }, 1500);
@@ -194,47 +237,6 @@ $(document).ready(function () {
         }
 
     });
-
-    setInterval(() => {
-        if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) > 2) {
-            player_X = 1;
-        } else if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) < -2) {
-            player_X = -1;
-        } else {
-            player_X = 0;
-        }
-        if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) > 2) {
-            player_Y = 1;
-        } else if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) < -2) {
-            player_Y = -1;
-        } else {
-            player_Y = 0;
-        }
-    }, 10);
-
-    setInterval(() => {
-        if (player_X != 0 || player_Y != 0) {
-            power_engine = true
-            if (boost_on != true) {
-                $("#player img").prop("src", "img/player_boost.png")
-                if (engine.paused) {
-                    engine = new Audio('sound/engine.mp3');
-                    engine.volume = 0.2;
-                    engine.loop = true;
-                    engine.play();
-                }
-            } else {
-                $("#player img").prop("src", "img/player_boost_max.png")
-            }
-            $("#player").stop().animate({ left: $("#target-player").css("left"), top: $("#target-player").css("top") }, player_speed);
-            if (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) < 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) < 100) {
-                engine.pause();
-                engine.currentTime = 0;
-                power_engine = false;
-                $("#player img").prop("src", "img/player.png")
-            }
-        }
-    }, 50);
 
     function getPixelRatio(context) { // CANVAS RATIO
         dpr = window.devicePixelRatio || 1,
