@@ -23,15 +23,20 @@
     </div>
     <div id="game-over" style="display: none;">
         <b>GAME OVER</b>
-        <div id="timer-over"></div>
+        <div id="timer-over">Temps joué : 00h00m00s</div>
         <div id="stats-asteroid-over">Astéroïdes détruits : 0</div>
+        <div id="difficulty-over">Difficulté : Très Facile</div>
         <button id="restart-over">Recommencer</button>
     </div>
     <div id="ATH">
-        <div id="timer"></div>
+        <div id="timer">Temps joué : 00h00m00s</div>
         <div id="stats-asteroid">Astéroïdes détruits : 0</div>
+        <div id="difficulty">Difficulté : Très Facile</div>
         <div id="life-bar">
-            <div id="life" name="100"></div>
+            <div id="life"></div>
+        </div>
+        <div id="boost-bar">
+            <div id="boost"></div>
         </div>
         <div id="shockwave-div">
             <div id="shockwave-1" class="shockwave-bar">
@@ -49,10 +54,13 @@
         <div id="WIP">Jeu en cours de développement par Tim Boulanger</div>
     </div>
     <div id="game_window">
-        <canvas id="line-target" style="width: 100vw; height: 100vh;"></canvas>
-        <div id="target-player">
-
+        <div id="tutorial">
+            <p>Déplace ta souris pour controler les mouvements de ton vaisseau</p>
+            <b>Espace pour l'onde de choc</b>
+            <b>Clique Gauche pour le boost</b>
         </div>
+        <canvas id="line-target" style="width: 100vw; height: 100vh;"></canvas>
+        <div id="target-player"></div>
         <div id="player" style="left: 50vw; top: 50vh;">
             <img src="img/player.png" alt="">
         </div>

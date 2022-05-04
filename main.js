@@ -8,12 +8,75 @@ let shockwave_available = 3;
 let player_X = 0;
 let player_Y = 0;
 let canvas = $("#line-target");
+let player_speed = 300;
+let boost_on = false;
+let power_engine = false;
+let difficulty = 4;
+let boost_charge = true;
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 $(document).ready(function () {
+
+    function displayDifficulty() {
+        if (difficulty <= 4) {
+            $("#difficulty").html("Difficulté : Très Facile");
+            $("#difficulty-over").html("Difficulté : Très Facile");
+        } else if (difficulty <= 6) {
+            $("#difficulty").html("Difficulté : Facile");
+            $("#difficulty-over").html("Difficulté : Facile");
+        } else if (difficulty <= 8) {
+            $("#difficulty").html("Difficulté : Normal");
+            $("#difficulty-over").html("Difficulté : Normal");
+        } else if (difficulty <= 10) {
+            $("#difficulty").html("Difficulté : Assez Dur");
+            $("#difficulty-over").html("Difficulté : Assez Dur");
+        } else if (difficulty <= 12) {
+            $("#difficulty").html("Difficulté : Difficile");
+            $("#difficulty-over").html("Difficulté : Difficile");
+        } else if (difficulty <= 14) {
+            $("#difficulty").html("Difficulté : Très Difficile");
+            $("#difficulty-over").html("Difficulté : Très Difficile");
+        } else if (difficulty <= 16) {
+            $("#difficulty").html("Difficulté : Hardcore");
+            $("#difficulty-over").html("Difficulté : Hardcore");
+        } else if (difficulty >= 18) {
+            $("#difficulty").html("Difficulté : Impossible");
+            $("#difficulty-over").html("Difficulté : Impossible");
+        }
+    }
+
+    setInterval(() => {
+        difficulty = difficulty + 2;
+        displayDifficulty();
+    }, 45000);
+
+    $(document).click(function (e) {
+        e.preventDefault();
+        if (boost_charge == true) {
+            boost_charge = false
+            boost_on = true
+            $("#player img").prop("src", "img/player_boost_max.png")
+            player_speed = 200;
+            $("#boost").stop().animate({ width: "0%" }, 1500);
+            setTimeout(() => {
+                player_speed = 300;
+                $("#player img").prop("src", "img/player_boost.png")
+                boost_on = false
+                $("#boost").stop().animate({ width: "100%" }, 4500);
+            }, 1500);
+            setTimeout(() => {
+                boost_charge = true;
+            }, 6000);
+        }
+
+    });
+
+    setTimeout(() => {
+        $("#tutorial").stop().animate({ opacity: 0 }, 1000);
+    }, 6000);
     setInterval(() => {
         if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) > 2) {
             player_X = 1;
@@ -33,17 +96,20 @@ $(document).ready(function () {
     }, 10);
 
     setInterval(() => {
-        if (player_X > 0) {
-            $("#player").css("left", (parseInt($("#player").css("left")) + 2))
-        } else if (player_X < 0) {
-            $("#player").css("left", (parseInt($("#player").css("left")) - 2))
+        if (player_X != 0 || player_Y != 0) {
+            power_engine = true
+            if (boost_on != true) {
+                $("#player img").prop("src", "img/player_boost.png")
+            } else {
+                $("#player img").prop("src", "img/player_boost_max.png")
+            }
+            $("#player").stop().animate({ left: $("#target-player").css("left"), top: $("#target-player").css("top") }, player_speed);
+            if (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) < 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) < 100) {
+                power_engine = false;
+                $("#player img").prop("src", "img/player.png")
+            }
         }
-        if (player_Y > 0) {
-            $("#player").css("top", (parseInt($("#player").css("top")) + 2))
-        } else if (player_Y < 0) {
-            $("#player").css("top", (parseInt($("#player").css("top")) - 2))
-        }
-    }, 10);
+    }, 50);
 
     function getPixelRatio(context) { // CANVAS RATIO
         dpr = window.devicePixelRatio || 1,
@@ -82,13 +148,13 @@ $(document).ready(function () {
     }, 10);
 
     setInterval(() => {
-        var mouseXY = {};
-        mouseXY.X = parseInt($("#target-player").css("left")) - 30;
-        mouseXY.Y = parseInt($("#target-player").css("top")) - 30;
+        if (power_engine == true) {
+            var mouseXY = {};
+            mouseXY.X = parseInt($("#target-player").css("left")) - 30;
+            mouseXY.Y = parseInt($("#target-player").css("top")) - 30;
 
-        var player = $("#player");
-        var prevXY = { X: null, Y: null };
-        setInterval(function () {
+            var player = $("#player");
+            var prevXY = { X: null, Y: null };
             if (prevXY.Y != mouseXY.Y || prevXY.X != mouseXY.X && (prevXY.Y != null || prevXY.X != null)) {
 
                 var cowXY = player.position();
@@ -109,14 +175,13 @@ $(document).ready(function () {
                 atan = atan + 90;
                 player.css({ transform: "rotate(" + atan + "deg) translate(-50%, -50%)" });
             }
-        }, 10);
-    }, 50);
+        }
+    }, 10);
 
     $(document).mousemove(function (e) {
         // values: e.clientX, e.clientY, e.pageX, e.pageY
         $("#target-player").css("top", e.clientY + "px");
         $("#target-player").css("left", e.clientX + "px");
-
     });
 
     $("#restart-over").click(function (e) {
@@ -171,7 +236,7 @@ $(document).ready(function () {
     let nb_wave = 1;
     let countdown = -7;
     setInterval(() => { // ASTEROID DEPLACEMENTS
-        for (let index = 0; index < (getRandomInt(10) + 8); index++) {
+        for (let index = 0; index < (getRandomInt(difficulty * 2) + difficulty * 1); index++) {
             let a_num = getRandomInt(10000);
             $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
             switch (getRandomInt(4)) {
@@ -427,27 +492,27 @@ $(document).ready(function () {
             displayShockwave();
         }
     }, 20);
-
-    $(document).mousedown(function () {
-        if (shock_on == false && shockwave_available > 1) {
-            shock_on = true
-            shockwave_available = shockwave_available - 1;
-            displayShockwave();
-            let shockwave_id = getRandomInt(100000)
-            $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
-            $("#" + shockwave_id).animate({
-                width: "400px",
-                height: "400px",
-                opacity: 0,
-            }, 800);
-            setTimeout(() => {
-                $("#" + shockwave_id).remove()
-            }, 900);
-            setTimeout(() => {
-                shock_on = false
-            }, 1000);
-        }
-    });
+    /*
+        $(document).mousedown(function () {
+            if (shock_on == false && shockwave_available > 1) {
+                shock_on = true
+                shockwave_available = shockwave_available - 1;
+                displayShockwave();
+                let shockwave_id = getRandomInt(100000)
+                $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
+                $("#" + shockwave_id).animate({
+                    width: "400px",
+                    height: "400px",
+                    opacity: 0,
+                }, 800);
+                setTimeout(() => {
+                    $("#" + shockwave_id).remove()
+                }, 900);
+                setTimeout(() => {
+                    shock_on = false
+                }, 1000);
+            }
+        });*/
 
     $(document).keydown(function (e) {
         if (e.keyCode == 32 && shock_on == false && shockwave_available > 1) {
