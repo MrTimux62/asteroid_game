@@ -13,10 +13,122 @@ let boost_on = false;
 let power_engine = false;
 let difficulty = 4;
 let boost_charge = true;
+let play = false;
+let nb_wave = 1;
+let countdown = -7;
+let engine = new Audio('sound/engine.mp3');
+let shockwave = new Audio('sound/shockwave.mp3');
+shockwave.volume = 0.3;
+let impact = new Audio('sound/impact.mp3');
+impact.volume = 0.3;
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
+$("#play").click(function (e) {
+    e.preventDefault();
+    $("#MENU").stop().animate({ top: "-100vh" }, 2000);
+    setTimeout(() => {
+        play = true;
+        setTimeout(() => {
+            $("#tutorial").stop().animate({ opacity: 0 }, 1000);
+        }, 6000);
+        $("#MENU").remove();
+
+        var ambiant = new Audio('sound/ambient-space-sound.mp3');
+        ambiant.loop = true;
+        ambiant.volume = 0.1;
+        ambiant.play();
+    }, 2000);
+    setInterval(() => { // ASTEROID DEPLACEMENTS
+        for (let index = 0; index < (getRandomInt(difficulty * 2) + difficulty * 1); index++) {
+            let a_num = getRandomInt(10000);
+            $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
+            switch (getRandomInt(4)) {
+                case 0: // top
+                    $("#" + nb_wave + "_" + a_num).css("top", "-25vh");
+                    $("#" + nb_wave + "_" + a_num).css("left", (getRandomInt(100) + 1) + "vw");
+                    $("#" + nb_wave + "_" + a_num).animate({
+                        left: (getRandomInt(100) + 1) + "vh",
+                        top: "125vh",
+                        deg: getRandomInt(721),
+                    }, {
+                        duration: (getRandomInt(3000) + 5000),
+                        step: function (now) {
+                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
+                        }
+                    });
+                    break;
+                case 1: // left
+                    $("#" + nb_wave + "_" + a_num).css("top", (getRandomInt(100) + 1) + "vh");
+                    $("#" + nb_wave + "_" + a_num).css("left", "-25vw");
+                    $("#" + nb_wave + "_" + a_num).animate({
+                        left: "125vw",
+                        top: (getRandomInt(100) + 1) + "vh",
+                        ddeg: getRandomInt(721),
+                    }, {
+                        duration: (getRandomInt(3000) + 5000),
+                        step: function (now) {
+                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
+                        }
+                    });
+                    break;
+                case 2: // right
+                    $("#" + nb_wave + "_" + a_num).css("top", (getRandomInt(100) + 1) + "vh");
+                    $("#" + nb_wave + "_" + a_num).css("left", "125vw");
+                    $("#" + nb_wave + "_" + a_num).animate({
+                        left: "-25vw",
+                        top: (getRandomInt(100) + 1) + "vh",
+                        deg: getRandomInt(721),
+                    }, {
+                        duration: (getRandomInt(3000) + 5000),
+                        step: function (now) {
+                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
+                        }
+                    });
+                    break;
+                case 3: // bottom
+                    $("#" + nb_wave + "_" + a_num).css("top", "125vh");
+                    $("#" + nb_wave + "_" + a_num).css("left", (getRandomInt(100) + 1) + "vh");
+                    $("#" + nb_wave + "_" + a_num).animate({
+                        left: (getRandomInt(100) + 1) + "vw",
+                        top: "-25vh",
+                        deg: getRandomInt(721),
+                    }, {
+                        duration: (getRandomInt(3000) + 5000),
+                        step: function (now) {
+                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+            $("#" + nb_wave + "_" + a_num).css("top",)
+        }
+        setTimeout(() => {
+            $(".wave_" + nb_wave).remove();
+            nb_wave++;
+        }, 7000);
+    }, 7200);
+
+    setInterval(() => {
+        if (play == true) {
+            if (countdown < 0) {
+                countdown++;
+                if (countdown > -4) {
+                    $("#wave-countdown").html("Champ d'asteroides dans <b style='color:red;font-size: 130%;'>" + Math.abs(countdown) + "</b> secondes")
+                } else {
+                    $("#wave-countdown").html("Champ d'asteroides dans <b>" + Math.abs(countdown) + "</b> secondes")
+                }
+            }
+            else {
+                $("#wave-countdown").html("Vous êtes dans le champ d'asteroides !")
+            }
+        }
+    }, 1000);
+});
 
 $(document).ready(function () {
 
@@ -49,13 +161,20 @@ $(document).ready(function () {
     }
 
     setInterval(() => {
-        difficulty = difficulty + 2;
-        displayDifficulty();
+        if (play == true) {
+            difficulty = difficulty + 2;
+            displayDifficulty();
+        }
     }, 45000);
 
     $(document).click(function (e) {
         e.preventDefault();
-        if (boost_charge == true) {
+        if (boost_charge == true && play == true) {
+            engine = new Audio('sound/engine_boost.mp3');
+            engine_sound_on = true;
+            engine.volume = 0.2;
+            engine.loop = true;
+            engine.play();
             boost_charge = false
             boost_on = true
             $("#player img").prop("src", "img/player_boost_max.png")
@@ -65,6 +184,8 @@ $(document).ready(function () {
                 player_speed = 300;
                 $("#player img").prop("src", "img/player_boost.png")
                 boost_on = false
+                engine.pause();
+                engine.currentTime = 0;
                 $("#boost").stop().animate({ width: "100%" }, 4500);
             }, 1500);
             setTimeout(() => {
@@ -74,9 +195,6 @@ $(document).ready(function () {
 
     });
 
-    setTimeout(() => {
-        $("#tutorial").stop().animate({ opacity: 0 }, 1000);
-    }, 6000);
     setInterval(() => {
         if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) > 2) {
             player_X = 1;
@@ -92,7 +210,6 @@ $(document).ready(function () {
         } else {
             player_Y = 0;
         }
-
     }, 10);
 
     setInterval(() => {
@@ -100,11 +217,19 @@ $(document).ready(function () {
             power_engine = true
             if (boost_on != true) {
                 $("#player img").prop("src", "img/player_boost.png")
+                if (engine.paused) {
+                    engine = new Audio('sound/engine.mp3');
+                    engine.volume = 0.2;
+                    engine.loop = true;
+                    engine.play();
+                }
             } else {
                 $("#player img").prop("src", "img/player_boost_max.png")
             }
             $("#player").stop().animate({ left: $("#target-player").css("left"), top: $("#target-player").css("top") }, player_speed);
             if (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) < 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) < 100) {
+                engine.pause();
+                engine.currentTime = 0;
                 power_engine = false;
                 $("#player img").prop("src", "img/player.png")
             }
@@ -190,8 +315,8 @@ $(document).ready(function () {
     });
 
     function displayLife() {
+        impact.play();
         if (life <= 0) {
-            console.log("GAME OVER");
             $("html, body").css("cursor", "default");
             $("#game-over").css("display", "");
             $("game_window").remove();
@@ -233,120 +358,21 @@ $(document).ready(function () {
         }
     }
 
-    let nb_wave = 1;
-    let countdown = -7;
-    setInterval(() => { // ASTEROID DEPLACEMENTS
-        for (let index = 0; index < (getRandomInt(difficulty * 2) + difficulty * 1); index++) {
-            let a_num = getRandomInt(10000);
-            $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
-            switch (getRandomInt(4)) {
-                case 0: // top
-                    $("#" + nb_wave + "_" + a_num).css("top", "-25vh");
-                    $("#" + nb_wave + "_" + a_num).css("left", (getRandomInt(100) + 1) + "vw");
-                    $("#" + nb_wave + "_" + a_num).animate({
-                        left: (getRandomInt(100) + 1) + "vh",
-                        top: "125vh",
-                        deg: getRandomInt(721),
-                    }, {
-                        duration: (getRandomInt(3000) + 5000),
-                        step: function (now) {
-                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
-                        }
-                    });
-                    break;
-                case 1: // left
-                    $("#" + nb_wave + "_" + a_num).css("top", (getRandomInt(100) + 1) + "vh");
-                    $("#" + nb_wave + "_" + a_num).css("left", "-25vw");
-                    $("#" + nb_wave + "_" + a_num).animate({
-                        left: "125vw",
-                        top: (getRandomInt(100) + 1) + "vh",
-                        ddeg: getRandomInt(721),
-                    }, {
-                        duration: (getRandomInt(3000) + 5000),
-                        step: function (now) {
-                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
-                        }
-                    });
-                    break;
-                case 2: // right
-                    $("#" + nb_wave + "_" + a_num).css("top", (getRandomInt(100) + 1) + "vh");
-                    $("#" + nb_wave + "_" + a_num).css("left", "125vw");
-                    $("#" + nb_wave + "_" + a_num).animate({
-                        left: "-25vw",
-                        top: (getRandomInt(100) + 1) + "vh",
-                        deg: getRandomInt(721),
-                    }, {
-                        duration: (getRandomInt(3000) + 5000),
-                        step: function (now) {
-                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
-                        }
-                    });
-                    break;
-                case 3: // bottom
-                    $("#" + nb_wave + "_" + a_num).css("top", "125vh");
-                    $("#" + nb_wave + "_" + a_num).css("left", (getRandomInt(100) + 1) + "vh");
-                    $("#" + nb_wave + "_" + a_num).animate({
-                        left: (getRandomInt(100) + 1) + "vw",
-                        top: "-25vh",
-                        deg: getRandomInt(721),
-                    }, {
-                        duration: (getRandomInt(3000) + 5000),
-                        step: function (now) {
-                            $(this).css({ transform: 'rotate(' + now + 'deg) translate(-50%, -50%)' });
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
-            $("#" + nb_wave + "_" + a_num).css("top",)
-        }
-        setTimeout(() => {
-            $(".wave_" + nb_wave).remove();
-            nb_wave++;
-        }, 7000);
-    }, 7200);
-
     setInterval(() => {
-        if (countdown < 0) {
-            countdown++;
-            if (countdown > -4) {
-                $("#wave-countdown").html("Champ d'asteroides dans <b style='color:red;font-size: 130%;'>" + Math.abs(countdown) + "</b> secondes")
-            } else {
-                $("#wave-countdown").html("Champ d'asteroides dans <b>" + Math.abs(countdown) + "</b> secondes")
-            }
-        }
-        else {
-            $("#wave-countdown").html("Vous êtes dans le champ d'asteroides !")
-            //countdown--
-        }
-        /*
-        if (countdown == 0) {
-            countdown = 10
-        }
-        if (countdown > 5) {
-            $("#wave-countdown").html("Vague en approche !")
-        } else if (countdown > 3) {
-            $("#wave-countdown").html("Prochaine vague dans <b>"+countdown+"</b> secondes")
-        }
-        else if (countdown > 0) {
-            $("#wave-countdown").html("Prochaine vague dans <b style='color:red;font-size: 130%;'>"+countdown+"</b> secondes")
-        }*/
-    }, 1000);
-
-    setInterval(() => {
-        if (life > 0) {
-            secondesplayed++;
-            if (secondesplayed > 59) {
-                minutesplayed++;
-                secondesplayed = 0;
-                if (minutesplayed > 59) {
-                    hoursplayed++;
-                    minutesplayed = 0;
+        if (play == true) {
+            if (life > 0) {
+                secondesplayed++;
+                if (secondesplayed > 59) {
+                    minutesplayed++;
+                    secondesplayed = 0;
+                    if (minutesplayed > 59) {
+                        hoursplayed++;
+                        minutesplayed = 0;
+                    }
                 }
+                $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
+                $("#timer-over").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
             }
-            $("#timer").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
-            $("#timer-over").html("Temps joué : " + ('0' + hoursplayed).slice(-2) + "h" + ('0' + minutesplayed).slice(-2) + "m" + ('0' + secondesplayed).slice(-2) + "s")
         }
     }, 1000);
 
@@ -386,7 +412,6 @@ $(document).ready(function () {
             if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
                 // MATCH BOTTOM JOUEUR
                 if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
-                    console.log("COLLISION DROITE BOTTOM");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -396,7 +421,6 @@ $(document).ready(function () {
                     }
                     $(this).remove()
                 } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
-                    console.log("COLLISION GAUCHE BOTTOM");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -409,7 +433,6 @@ $(document).ready(function () {
             } else if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
                 // MATCH TOP JOUEUR
                 if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
-                    console.log("COLLISION DROITE TOP");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -419,7 +442,6 @@ $(document).ready(function () {
                     }
                     $(this).remove()
                 } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
-                    console.log("COLLISION GAUCHE TOP");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -432,7 +454,6 @@ $(document).ready(function () {
             } else if (player_Xmin < asteroid_Xmax && player_Xmin > asteroid_Xmin) {
                 // MATCH GAUCHE JOUEUR
                 if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
-                    console.log("COLLISION GAUCHE BOTTOM");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -443,7 +464,6 @@ $(document).ready(function () {
                     $(this).remove()
                 }
                 if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
-                    console.log("COLLISION GAUCHE TOP");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -456,7 +476,6 @@ $(document).ready(function () {
             } else if (player_Xmax > asteroid_Xmin && player_Xmax < asteroid_Xmax) {
                 // MATCH DROITE JOUEUR
                 if (player_Ymax > asteroid_Ymin && player_Ymax < asteroid_Ymax) {
-                    console.log("COLLISION DROITE BOTTOM");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -467,7 +486,6 @@ $(document).ready(function () {
                     $(this).remove()
                 }
                 if (player_Ymin < asteroid_Ymax && player_Ymin > asteroid_Ymin) {
-                    console.log("COLLISION DROITE TOP");
                     if (shock_on == false) {
                         life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3))
                         displayLife();
@@ -520,6 +538,7 @@ $(document).ready(function () {
             shockwave_available = shockwave_available - 1;
             displayShockwave();
             let shockwave_id = getRandomInt(100000)
+            shockwave.play();
             $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
             $("#" + shockwave_id).animate({
                 width: "400px",

@@ -288,6 +288,53 @@ html, body {
     margin: 1vh 0;
 }
 
+#MENU {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 15;
+    cursor: default;
+    color: white;
+}
+#MENU b {
+    font-size: 350%;
+    position: absolute;
+    color: white;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 25%;
+    font-family: 'Pathway Gothic One', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Syne Tactile', cursive;
+}
+
+#MENU b i{
+    font-size: 50%;
+}
+
+#play {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 5px;
+    font-size: 175%;
+    color: white;
+    padding: 30px 50px;
+    cursor: pointer;
+    transition: all 500ms;
+}
+
+#play:hover {
+    border-radius: 2px;
+    color: black;
+    background-color: white;
+    transition: all 500ms;
+}
+
 @keyframes bgscroll1 {
     from {
         top: -75vh;
