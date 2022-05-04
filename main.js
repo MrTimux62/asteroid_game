@@ -221,12 +221,16 @@ $(document).ready(function () {
         if (boost_charge == true && play == true) {
             boost_charge = false
             boost_on = true
-            $("#player img").prop("src", "img/player_boost_max.png")
+            /*$("#player img").prop("src", "img/player_boost_max.png")*/
             player_speed = 200;
             $("#boost").stop().animate({ width: "0%" }, 1500);
             setTimeout(() => {
                 player_speed = 300;
-                $("#player img").prop("src", "img/player_boost.png")
+                if (player_X == 0 && player_Y == 0) {
+                    $("#player img").prop("src", "img/player.png")
+                } else {
+                    $("#player img").prop("src", "img/player_boost.png")
+                }
                 boost_on = false
                 engine.currentTime = 0;
                 $("#boost").stop().animate({ width: "100%" }, 4500);
