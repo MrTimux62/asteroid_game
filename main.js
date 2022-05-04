@@ -5,20 +5,121 @@ let hoursplayed = 0;
 let shock_on = false;
 let asteroid_destroy = 0;
 let shockwave_available = 3;
-
-$(document).mousemove(function (e) {
-    // values: e.clientX, e.clientY, e.pageX, e.pageY
-    $("#player").css("top", e.clientY + "px");
-    $("#player").css("left", e.clientX + "px");
-});
+let player_X = 0;
+let player_Y = 0;
+let canvas = $("#line-target");
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 $(document).ready(function () {
+    setInterval(() => {
+        if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) > 2) {
+            player_X = 1;
+        } else if (parseInt($("#target-player").css("left")) - parseInt($("#player").css("left")) < -2) {
+            player_X = -1;
+        } else {
+            player_X = 0;
+        }
+        if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) > 2) {
+            player_Y = 1;
+        } else if (parseInt($("#target-player").css("top")) - parseInt($("#player").css("top")) < -2) {
+            player_Y = -1;
+        } else {
+            player_Y = 0;
+        }
 
-    $("#restart-over").click(function (e) { 
+    }, 10);
+
+    setInterval(() => {
+        if (player_X > 0) {
+            $("#player").css("left", (parseInt($("#player").css("left")) + 2))
+        } else if (player_X < 0) {
+            $("#player").css("left", (parseInt($("#player").css("left")) - 2))
+        }
+        if (player_Y > 0) {
+            $("#player").css("top", (parseInt($("#player").css("top")) + 2))
+        } else if (player_Y < 0) {
+            $("#player").css("top", (parseInt($("#player").css("top")) - 2))
+        }
+    }, 10);
+
+    function getPixelRatio(context) { // CANVAS RATIO
+        dpr = window.devicePixelRatio || 1,
+            bsr = context.webkitBackingStorePixelRatio ||
+            context.mozBackingStorePixelRatio ||
+            context.msBackingStorePixelRatio ||
+            context.oBackingStorePixelRatio ||
+            context.backingStorePixelRatio || 1;
+        return dpr / bsr;
+    }
+
+    setInterval(() => {
+        var canvas = document.getElementById("line-target");
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let player_posX = parseInt($("#player").css("left"));
+        let player_posY = parseInt($("#player").css("top"));
+        let target_posX = parseInt($("#target-player").css("left"));
+        let target_posY = parseInt($("#target-player").css("top"));
+        var pixelRatio = getPixelRatio(ctx);
+        var initialWidth = canvas.clientWidth * pixelRatio;
+        var initialHeight = canvas.clientHeight * pixelRatio;
+        var width = initialWidth * pixelRatio;
+        var height = initialHeight * pixelRatio;
+        if (width != ctx.canvas.width)
+            ctx.canvas.width = width;
+        if (height != ctx.canvas.height)
+            ctx.canvas.height = height;
+        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        ctx.beginPath();
+        ctx.moveTo(player_posX, player_posY);
+        ctx.lineTo(target_posX, target_posY);
+        ctx.setLineDash([5, 15]);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.stroke();
+    }, 10);
+
+    setInterval(() => {
+        var mouseXY = {};
+        mouseXY.X = parseInt($("#target-player").css("left")) - 30;
+        mouseXY.Y = parseInt($("#target-player").css("top")) - 30;
+
+        var player = $("#player");
+        var prevXY = { X: null, Y: null };
+        setInterval(function () {
+            if (prevXY.Y != mouseXY.Y || prevXY.X != mouseXY.X && (prevXY.Y != null || prevXY.X != null)) {
+
+                var cowXY = player.position();
+                var diffX = cowXY.left - mouseXY.X;
+                var diffY = cowXY.top - mouseXY.Y;
+                var tan = diffY / diffX;
+
+                var atan = Math.atan(tan) * 180 / Math.PI;;
+                if (diffY > 0 && diffX > 0) {
+                    atan += 180;
+                }
+                else if (diffY < 0 && diffX > 0) {
+                    atan -= 180;
+                }
+
+                prevXY.X = mouseXY.X;
+                prevXY.Y = mouseXY.Y;
+                atan = atan + 90;
+                player.css({ transform: "rotate(" + atan + "deg) translate(-50%, -50%)" });
+            }
+        }, 10);
+    }, 50);
+
+    $(document).mousemove(function (e) {
+        // values: e.clientX, e.clientY, e.pageX, e.pageY
+        $("#target-player").css("top", e.clientY + "px");
+        $("#target-player").css("left", e.clientX + "px");
+
+    });
+
+    $("#restart-over").click(function (e) {
         e.preventDefault();
         location.reload();
     });
@@ -39,7 +140,6 @@ $(document).ready(function () {
     }
 
     function displayShockwave() {
-        console.log("resfresh");
         if (shockwave_available >= 3) {
             $("#shock-1").css("width", "100%");
             $("#shock-1").css("opacity", "1");
@@ -71,7 +171,7 @@ $(document).ready(function () {
     let nb_wave = 1;
     let countdown = -7;
     setInterval(() => { // ASTEROID DEPLACEMENTS
-        for (let index = 0; index < (getRandomInt(20) + 18); index++) {
+        for (let index = 0; index < (getRandomInt(10) + 8); index++) {
             let a_num = getRandomInt(10000);
             $("#game_window").append("<img class='asteroid wave_" + nb_wave + "' id='" + nb_wave + "_" + a_num + "' src='img/asteroid" + getRandomInt(5) + ".png' style='max-width: " + (getRandomInt(60) + 40) + "px; rotate(360deg) translate(-50%, -50%);'>");
             switch (getRandomInt(4)) {
@@ -332,7 +432,6 @@ $(document).ready(function () {
         if (shock_on == false && shockwave_available > 1) {
             shock_on = true
             shockwave_available = shockwave_available - 1;
-            console.log(shockwave_available);
             displayShockwave();
             let shockwave_id = getRandomInt(100000)
             $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
@@ -354,7 +453,6 @@ $(document).ready(function () {
         if (e.keyCode == 32 && shock_on == false && shockwave_available > 1) {
             shock_on = true
             shockwave_available = shockwave_available - 1;
-            console.log(shockwave_available);
             displayShockwave();
             let shockwave_id = getRandomInt(100000)
             $("#game_window").append("<div class='shockwave' id='" + shockwave_id + "' style='left: " + $("#player").css("left") + "; top: " + $("#player").css("top") + "; width:5px; height:5px;'></div>")
