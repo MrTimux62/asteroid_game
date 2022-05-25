@@ -150,21 +150,22 @@ $("#play").click(function (e) {
         if (player_X != 0 || player_Y != 0) {
             power_engine = true
             if (boost_on != true) {
-                $("#player img").prop("src", "img/player_boost.png")
-                if (engine.paused && Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100) {
+                if (engine.paused && (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 || Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100)) {
                     engine = new Audio('sound/engine.mp3');
                     engine.volume = 0.2;
                     engine.loop = true;
                     engine.play();
+                    $("#player img").prop("src", "img/player_boost.png")
                 }
             } else {
-                if (engine.paused && Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100) {
+                if (engine.paused && (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) > 100 || Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) > 100)) {
                     engine = new Audio('sound/engine_boost.mp3');
                     engine.volume = 0.2;
                     engine.loop = true;
                     engine.play();
+                    $("#player img").prop("src", "img/player_boost_max.png")
                 }
-                $("#player img").prop("src", "img/player_boost_max.png")
+                
             }
             $("#player").stop().animate({ left: $("#target-player").css("left"), top: $("#target-player").css("top") }, player_speed);
             if (Math.abs(parseInt($("#target-player").css("left")) - parseInt($("#player").css("left"))) < 100 && Math.abs(parseInt($("#target-player").css("top")) - parseInt($("#player").css("top"))) < 100) {
@@ -221,6 +222,7 @@ $(document).ready(function () {
         if (boost_charge == true && play == true) {
             boost_charge = false
             boost_on = true
+            engine.pause();
             /*$("#player img").prop("src", "img/player_boost_max.png")*/
             player_speed = 200;
             $("#boost").stop().animate({ width: "0%" }, 1500);

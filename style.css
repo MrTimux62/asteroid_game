@@ -335,6 +335,34 @@ html, body {
     transition: all 500ms;
 }
 
+#stats {
+    position: absolute;
+    left: 2vw;
+    bottom: 2vh;
+    display: grid;
+    gap: 20px;
+    min-width: 180px;
+}
+
+.base-bar {
+    display: inline-flex;
+    place-content: space-between;
+    color: white;
+    font-weight: 200;
+}
+
+.base-bar-2 {
+    display: inline-flex;
+    gap: 5px;
+}
+
+.bar {
+    height: 100%;
+    width: 8px;
+    border: 1px solid white;
+    border-radius: 2px;
+}
+
 @keyframes bgscroll1 {
     from {
         top: -75vh;
