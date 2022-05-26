@@ -171,7 +171,7 @@ $("#play").click(function (e) {
     setInterval(() => { // ENNEMI DEPLACEMENTS
         for (let index = 0; index < (getRandomInt(difficulty * 2 / 4) + difficulty * 1 / 4); index++) {
             let ennemi_id = getRandomInt(9999999);
-            $("#game_window").append("<img src='img/ship_1.png' id='"+ennemi_id+"' class='ennemi'>");
+            $("#game_window").append("<img src='img/ship_1.png' id='" + ennemi_id + "' class='ennemi'>");
             switch (getRandomInt(4)) {
                 case 0: // top
                     $("#" + ennemi_id).css("top", "-10vh");
@@ -518,9 +518,6 @@ $(document).ready(function () {
     });
 
     function displayLife() {
-        impact.pause();
-        impact.currentTime = 0;
-        impact.play();
         if (life <= 0) {
             $("html, body").css("cursor", "default");
             $("#game-over").css("display", "");
@@ -623,6 +620,9 @@ $(document).ready(function () {
                 } else {
                     $(this).remove();
                     life = life - parseInt((parseInt($(this).css("max-width")) - 30) / (getRandomInt(4) + 3));
+                    impact.pause();
+                    impact.currentTime = 0;
+                    impact.play();
                     displayLife();
                     asteroid_destroy++;
                     displayAsteroid();
