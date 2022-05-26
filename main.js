@@ -68,27 +68,33 @@ $("#play").click(function (e) {
     }, 2000);
 
     setInterval(() => {
-        let boost_X = $(".boost").css("left");
-        let boost_Y = $(".boost").css("top");
-        let player_posX = $("#player").css("left");
-        let player_posY = $("#player").css("top");
-        if (Math.abs(parseFloat(player_posX) - parseFloat(boost_X)) < 50 && Math.abs(parseFloat(player_posY) - parseFloat(boost_Y)) < 50) {
-            if ($(".boost").attr("id") == "speed_boost" && speed_stats < 5) {
-                speed_stats++;
-                player_speed = 350 - speed_stats * 50;
-            } else if ($(".boost").attr("id") == "shockwave_boost" && shockwave_stats < 5) {
-                shockwave_stats++;
-                shockwave_width = 300 + shockwave_stats * 100;
-            } else if ($(".boost").attr("id") == "time_boost" && time_stats < 5) {
-                time_stats++;
-                boost_time = 1500 + time_stats * 500
-            } else if ($(".boost").attr("id") == "heal_boost" && regen_stats < 5) {
-                regen_stats++;
+        if (getRandomInt(100) < 60) {
+            let left_boost = (getRandomInt(91) + 5) + "vw";
+            let top_boost = "-5vh";
+            switch (getRandomInt(4)) {
+                case 0:
+                    $("#game_window").append("<img class='boost' id='speed_boost' src='img/speed_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
+                    break;
+                case 1:
+                    $("#game_window").append("<img class='boost' id='shockwave_boost' src='img/shockwave_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
+                    break;
+                case 2:
+                    $("#game_window").append("<img class='boost' id='time_boost' src='img/time_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
+                    break;
+                case 3:
+                    $("#game_window").append("<img class='boost' id='heal_boost' src='img/heal_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
+                    break;
+                default:
+                    break;
             }
-            displayStats();
-            $(".boost").remove();
+            $(".boost").animate({
+                top: "105vh"
+            }, 8000);
+            setTimeout(() => {
+                $(".boost").remove();
+            }, 8000);
         }
-    }, 50);
+    }, 10000);
 
     setInterval(() => { // ASTEROID DEPLACEMENTS
         for (let index = 0; index < (getRandomInt(difficulty * 2) + difficulty * 1); index++) {
@@ -372,6 +378,8 @@ $(document).ready(function () {
     });
 
     function displayLife() {
+        impact.pause();
+        impact.currentTime = 0;
         impact.play();
         if (life <= 0) {
             $("html, body").css("cursor", "default");
@@ -436,7 +444,27 @@ $(document).ready(function () {
     setInterval(() => { // REWORK COLLISION
         let player_posX = $("#player").css("left");
         let player_posY = $("#player").css("top");
-        $(".wave_" + nb_wave).each(function (index) {
+
+        let boost_X = $(".boost").css("left");
+        let boost_Y = $(".boost").css("top");
+        if (Math.abs(parseFloat(player_posX) - parseFloat(boost_X)) < 50 && Math.abs(parseFloat(player_posY) - parseFloat(boost_Y)) < 50) { // BOOST COLLISION
+            if ($(".boost").attr("id") == "speed_boost" && speed_stats < 5) {
+                speed_stats++;
+                player_speed = 350 - speed_stats * 50;
+            } else if ($(".boost").attr("id") == "shockwave_boost" && shockwave_stats < 5) {
+                shockwave_stats++;
+                shockwave_width = 300 + shockwave_stats * 100;
+            } else if ($(".boost").attr("id") == "time_boost" && time_stats < 5) {
+                time_stats++;
+                boost_time = 1500 + time_stats * 500
+            } else if ($(".boost").attr("id") == "heal_boost" && regen_stats < 5) {
+                regen_stats++;
+            }
+            displayStats();
+            $(".boost").remove();
+        }
+
+        $(".wave_" + nb_wave).each(function (index) { // ASTEROID COLLISION
             let asteroid_posX = $(this).css("left");
             let asteroid_posY = $(this).css("top");
             let distance_asteroid;
@@ -461,6 +489,8 @@ $(document).ready(function () {
                 }
             }
         });
+
+        
     }, 50);
 /*
     setInterval(() => { // COLLISION SYSTEM
@@ -619,34 +649,7 @@ $(document).ready(function () {
 
     // EVENEMENT
 
-    setInterval(() => {
-        if (getRandomInt(100) < 60) {
-            let left_boost = (getRandomInt(91) + 5) + "vw";
-            let top_boost = "-5vh";
-            switch (getRandomInt(4)) {
-                case 0:
-                    $("#game_window").append("<img class='boost' id='speed_boost' src='img/speed_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
-                    break;
-                case 1:
-                    $("#game_window").append("<img class='boost' id='shockwave_boost' src='img/shockwave_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
-                    break;
-                case 2:
-                    $("#game_window").append("<img class='boost' id='time_boost' src='img/time_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
-                    break;
-                case 3:
-                    $("#game_window").append("<img class='boost' id='heal_boost' src='img/heal_boost.png' style='left:" + left_boost + ";top:" + top_boost + "'>");
-                    break;
-                default:
-                    break;
-            }
-            $(".boost").animate({
-                top: "105vh"
-            }, 8000);
-            setTimeout(() => {
-                $(".boost").remove();
-            }, 8000);
-        }
-    }, 10000);
+    
 
 
     setInterval(() => {
