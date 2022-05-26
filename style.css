@@ -363,6 +363,12 @@ html, body {
     border-radius: 2px;
 }
 
+.boost {
+    position: absolute;
+    transform: translate(-50%,-50%);
+    max-width: 50px;
+}
+
 @keyframes bgscroll1 {
     from {
         top: -75vh;
