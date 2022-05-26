@@ -369,6 +369,22 @@ html, body {
     max-width: 50px;
 }
 
+.ennemi {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    z-index: 2;
+    transform-origin: left top;
+}
+
+.projectile {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    z-index: 1;
+    transform-origin: left top;
+}
+
 @keyframes bgscroll1 {
     from {
         top: -75vh;
